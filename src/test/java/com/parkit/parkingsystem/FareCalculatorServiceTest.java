@@ -123,5 +123,29 @@ public class FareCalculatorServiceTest {
         fareCalculatorService.calculateFare(ticket);
         assertEquals( (24 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
+    
+    @Test
+    public void testCalculateFareCarForRecurrentUser() {
+//    	TODO 	
+    }
+    
+    @Test
+    public void testCalculateFareCarWithLessThanThrityMinutesParkingTime() {
+//    	TODO
+    }
+    
+    @Test
+    public void testCalculateFareBikeForRecurrentUser() {
+//    	TODO 	
+    }
+    
+    @Test
+    public void testCalculateFareBikeWithLessThanThrityMinutesParkingTime() {
+//    	TODO
+    }
+    
+
+    
+    
 
 }
