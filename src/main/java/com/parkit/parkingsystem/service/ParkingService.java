@@ -37,6 +37,7 @@ public class ParkingService {
 
                 Date inTime = new Date();
                 Ticket ticket = new Ticket();
+                int numberOfTicketAlreadyPaid=0;
                 //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
                 //ticket.setId(ticketID);
                 ticket.setParkingSpot(parkingSpot);
@@ -45,6 +46,13 @@ public class ParkingService {
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
                 ticketDAO.saveTicket(ticket);
+                
+                numberOfTicketAlreadyPaid = ticketDAO.getNumberOfTicketAlreadyPaid(vehicleRegNumber);
+                if (numberOfTicketAlreadyPaid >0 ) {
+                	System.out.println("Welcome back ! As a recurring user of our parking lot, you'll benefit from a 5% discount");
+//                	ticket.setARecurrentUser(true);
+                }
+                
                 System.out.println("Generated Ticket and saved in DB");
                 System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
                 System.out.println("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
@@ -102,7 +110,14 @@ public class ParkingService {
             String vehicleRegNumber = getVehichleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             Date outTime = new Date();
+            int nbOfTicketAlreadyPaid = ticketDAO.getNumberOfTicketAlreadyPaid(vehicleRegNumber);
             ticket.setOutTime(outTime);
+            
+            ticket.setARecurrentUser(false);
+            if (nbOfTicketAlreadyPaid > 0) {
+            	ticket.setARecurrentUser(true);
+            }
+            
             fareCalculatorService.calculateFare(ticket);
             if(ticketDAO.updateTicket(ticket)) {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
