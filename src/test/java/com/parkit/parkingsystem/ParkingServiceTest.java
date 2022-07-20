@@ -59,21 +59,4 @@ public class ParkingServiceTest {
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
 	}
 
-	@Test
-	public void testGetNextParkingNumberIfAvailableForCar() {
-		// GIVEN
-		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		ParkingSpot expectedCarParkingSpot = new ParkingSpot(2, ParkingType.CAR, true);
-		when(inputReaderUtil.readSelection()).thenReturn(1);
-		when(parkingSpotDAO.getNextAvailableSlot(any())).thenReturn(2);
-
-		// WHEN
-		ParkingSpot actualCarParkingSpot = parkingService.getNextParkingNumberIfAvailable();
-
-		// THEN
-		verify(inputReaderUtil).readSelection();
-		verify(parkingSpotDAO).getNextAvailableSlot(any());
-		assertEquals(expectedCarParkingSpot, actualCarParkingSpot);
-	}
-
 }
