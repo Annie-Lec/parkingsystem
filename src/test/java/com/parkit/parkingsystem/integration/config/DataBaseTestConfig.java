@@ -11,19 +11,19 @@ public class DataBaseTestConfig extends DataBaseConfig {
     private static final Logger logger = LogManager.getLogger("DataBaseTestConfig");
 
     public Connection getConnection() throws ClassNotFoundException, SQLException {
-        logger.info("Create DB connection");
+        logger.info("Create DB connection in Test");
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/test","root","rootroot");
+                "jdbc:mysql://localhost:3306/test?serverTimezone=UTC","root","rootroot");
     }
 
     public void closeConnection(Connection con){
         if(con!=null){
             try {
                 con.close();
-                logger.info("Closing DB connection");
+                logger.info("Closing DB connection in Test");
             } catch (SQLException e) {
-                logger.error("Error while closing connection",e);
+                logger.error("Error while closing connection in Test",e);
             }
         }
     }
@@ -32,9 +32,9 @@ public class DataBaseTestConfig extends DataBaseConfig {
         if(ps!=null){
             try {
                 ps.close();
-                logger.info("Closing Prepared Statement");
+                logger.info("Closing Prepared Statement in Test");
             } catch (SQLException e) {
-                logger.error("Error while closing prepared statement",e);
+                logger.error("Error while closing prepared statement in Test",e);
             }
         }
     }
@@ -43,9 +43,9 @@ public class DataBaseTestConfig extends DataBaseConfig {
         if(rs!=null){
             try {
                 rs.close();
-                logger.info("Closing Result Set");
+                logger.info("Closing Result Set in Test");
             } catch (SQLException e) {
-                logger.error("Error while closing result set",e);
+                logger.error("Error while closing result set in Test",e);
             }
         }
     }

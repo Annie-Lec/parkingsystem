@@ -1,10 +1,11 @@
 /target/*
 target/*
-.gitignore
-.classpath
-.project
-.settings/
+/.gitignore
+/.classpath*
+/.project*
+/.settings/
 Thumbs.db
+/logs.txt
  
 # built application files
 *.apk

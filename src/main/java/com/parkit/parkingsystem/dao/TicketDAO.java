@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+
 public class TicketDAO {
 
 	private static final Logger logger = LogManager.getLogger("TicketDAO");
@@ -21,6 +22,7 @@ public class TicketDAO {
 
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
+		boolean result = false;
 		try {
 			con = dataBaseConfig.getConnection();
 			PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET);
@@ -31,14 +33,19 @@ public class TicketDAO {
 			ps.setDouble(3, ticket.getPrice());
 			ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
 			ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTime())));
-			ps.execute();
-			return true;
+			int nbLineInsert = ps.executeUpdate();
+
+			if (nbLineInsert == 1) {
+				result = true;
+			}
+
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
+			result = false;
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}
-		return false;
+		return result;
 	}
 
 	public Ticket getTicket(String vehicleRegNumber) {
@@ -71,21 +78,26 @@ public class TicketDAO {
 	}
 
 	public boolean updateTicket(Ticket ticket) {
+		
+		boolean result = false;
 		Connection con = null;
-		try {
-			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
-			ps.setDouble(1, ticket.getPrice());
-			ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
-			ps.setInt(3, ticket.getId());
-			ps.execute();
+		try {			
+			con = dataBaseConfig.getConnection();			
+			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);			
+			ps.setDouble(1, ticket.getPrice());			
+			ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));			
+			ps.setInt(3, ticket.getId());			
+			ps.execute();		
 			return true;
 		} catch (Exception ex) {
 			logger.error("Error saving ticket info", ex);
+			System.out.println("point 12");
 		} finally {
 			dataBaseConfig.closeConnection(con);
+			System.out.println("point 13");
 		}
-		return false;
+		System.out.println("point 14");
+		return result;
 	}
 
 	public int getNumberOfTicketAlreadyPaid(String vehicleRegNumber) {
