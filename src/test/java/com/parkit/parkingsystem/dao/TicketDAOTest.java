@@ -22,7 +22,7 @@ class TicketDAOTest {
 	public static final String VEHICULE_NEW = "IMMAT-SAUV";
 
 	private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
-	private static TicketDAO ticketDAO;
+	private TicketDAO ticketDAO;
 
 	private static DataBasePrepareService dataBasePrepareService;
 

@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
-import java.sql.Date;
+
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
@@ -72,6 +72,7 @@ public class ParkingDataBaseIT {
 		assertNull(ticketInBDD.getOutTime());
 		assertNotEquals(1, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)); // sera 2
 		assertEquals(2, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)); // sera 2
+		assertEquals(false,ticketInBDD.getParkingSpot().isAvailable());
 
     }
 
@@ -83,17 +84,9 @@ public class ParkingDataBaseIT {
         //TODO: check that the fare generated and out time are populated correctly in the database
         Ticket ticketInBDD = ticketDAO.getTicket("ABCDEF");
         
-        ticketInBDD.setOutTime(null);
-        
-        Date dateTicket = new Date(System.currentTimeMillis());
-        ticketInBDD.setOutTime(dateTicket);
-        ticketInBDD.setPrice(12.23);
-        
         assertNotNull(ticketInBDD.getPrice());
 		assertNotNull(ticketInBDD.getOutTime());
 		
-		assertEquals(12.23, ticketInBDD.getPrice());
-    
     }
 
 }
