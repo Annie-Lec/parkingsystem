@@ -69,9 +69,13 @@ public class ParkingDataBaseIT {
         assertEquals("ABCDEF", ticketInBDD.getVehicleRegNumber());
 		assertEquals(ParkingType.CAR, ticketInBDD.getParkingSpot().getParkingType());
 		assertNotNull(ticketInBDD.getInTime());
+		//lors de la phase d'entrée, l'horaire de sortie n'est pas renseigné
 		assertNull(ticketInBDD.getOutTime());
-		assertNotEquals(1, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)); // sera 2
-		assertEquals(2, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)); // sera 2
+		// pour une voiture, la première place de parking à prendre est la numéro 1. 
+		//Donc la 1 vient dêtre prise, elle n'est plus libre ...available
+		assertNotEquals(1, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)); 
+		// sera la place 2 la prochaine libre
+		assertEquals(2, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)); 
 		assertEquals(false,ticketInBDD.getParkingSpot().isAvailable());
 
     }
