@@ -99,24 +99,33 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
+				<!-- <executions>
 					<execution>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
-						</goals>
-						<configuration>
-							<archive>
-								<manifest>
-									<mainClass>
+						</goals>-->
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>
                                         com.parkit.parkingsystem.App
                                     </mainClass>
-								</manifest>
-							</archive>
-							<descriptorRefs>
-								<descriptorRef>executable-jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
-						</configuration>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<!--</execution>
+				</executions>-->
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase> <!-- packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
