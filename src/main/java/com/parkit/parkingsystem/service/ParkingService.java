@@ -29,9 +29,21 @@ public class ParkingService {
 
     public void processIncomingVehicle() {
         try{
+           
+        	
+        	
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0){
                 String vehicleRegNumber = getVehichleRegNumber();
+                
+                if(ticketDAO.checkIfVehicleIsAlreadyInTheParking(vehicleRegNumber)){
+                	System.out.println("\n");
+                	System.out.println(" -------------------------------------------------------------------- ");
+                    System.out.println(" You can't come in a second time : Your Register Number is currently in the parking lot.\n");
+                	System.out.println(" -------------------------------------------------------------------- ");
+                    return;
+                }
+                
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
 
@@ -50,12 +62,13 @@ public class ParkingService {
                 numberOfTicketAlreadyPaid = ticketDAO.getNumberOfTicketAlreadyPaid(vehicleRegNumber);
                 if (numberOfTicketAlreadyPaid >0 ) {
                 	System.out.println("Welcome back ! As a recurring user of our parking lot, you'll benefit from a 5% discount");
-//                	ticket.setARecurrentUser(true);
+                	System.out.println(" -------------------------------------------------------------------- ");
                 }
                 
                 System.out.println("Generated Ticket and saved in DB");
                 System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
                 System.out.println("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
+                System.out.println(" ------------------------------------------------------------------------ ");
             }
         }catch(Exception e){
             logger.error("Unable to process incoming vehicle",e);

@@ -1,8 +1,9 @@
-package com.parkit.parkingsystem.service;
+package com.parkit.parkingsystem.util;
 
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
-import com.parkit.parkingsystem.util.InputReaderUtil;
+import com.parkit.parkingsystem.service.ParkingService;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

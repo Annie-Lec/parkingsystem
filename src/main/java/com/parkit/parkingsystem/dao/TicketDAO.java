@@ -13,7 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
-
 public class TicketDAO {
 
 	private static final Logger logger = LogManager.getLogger("TicketDAO");
@@ -78,16 +77,16 @@ public class TicketDAO {
 	}
 
 	public boolean updateTicket(Ticket ticket) {
-		
+
 		boolean result = false;
 		Connection con = null;
-		try {			
-			con = dataBaseConfig.getConnection();			
-			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);			
-			ps.setDouble(1, ticket.getPrice());			
-			ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));			
-			ps.setInt(3, ticket.getId());			
-			ps.execute();		
+		try {
+			con = dataBaseConfig.getConnection();
+			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
+			ps.setDouble(1, ticket.getPrice());
+			ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
+			ps.setInt(3, ticket.getId());
+			ps.execute();
 			return true;
 		} catch (Exception ex) {
 			logger.error("Error saving ticket info", ex);
@@ -121,5 +120,28 @@ public class TicketDAO {
 		}
 		return numberOfTicketAlreadyPaid;
 	}
+
+	public boolean checkIfVehicleIsAlreadyInTheParking(String vehicleRegNumber){
+	        Connection con = null;
+	        int numberOfTicketAlreadyOpened = 0;
+	        boolean result = false;
+	        try {
+	            con = dataBaseConfig.getConnection();
+	            PreparedStatement ps = con.prepareStatement(DBConstants.GET_REGNUMBER_ALREADY_IN_PARKING_AND_NOT_EXIT);
+	            //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+	            ps.setString(1,vehicleRegNumber);
+	            ResultSet rs = ps.executeQuery();
+	            rs.next();
+	            numberOfTicketAlreadyOpened = rs.getInt("count(*)");
+	            if (numberOfTicketAlreadyOpened > 0) {
+	            	result= true ;
+	            }
+	       
+	            }catch(	Exception ex){
+	                logger.error("Error fetching next available slot",ex);
+	            }finally {
+		dataBaseConfig.closeConnection(con);
+	}return result;
+}
 
 }

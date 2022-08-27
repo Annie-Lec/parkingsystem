@@ -31,13 +31,13 @@ class TicketDAOTest {
 	@BeforeAll
 	private static void setUp() throws Exception {
 		dataBasePrepareService = new DataBasePrepareService();
-		// On nettoie la bdd
-		dataBasePrepareService.clearDataBaseEntries();
-
 	}
 
 	@BeforeEach
 	public void setUpPerTest() throws Exception {
+		// On nettoie la bdd
+		dataBasePrepareService.clearDataBaseEntries();
+		
 		ticketDAO = new TicketDAO();
 		ticketDAO.dataBaseConfig = dataBaseTestConfig;
 
@@ -130,9 +130,8 @@ class TicketDAOTest {
 		// GIVEN
 		boolean result = false;
 		Ticket ticket = new Ticket();
-//on ne renseigne pas la date fin pour que ça renvoie false
-//		Date dateTicket = new Date(System.currentTimeMillis());
-//		ticket.setOutTime(dateTicket);
+        //on ne renseigne pas la date fin pour que ça renvoie false
+
 		ticket.setPrice(12.23);
 		ticket.setId(1);
 
@@ -146,4 +145,119 @@ class TicketDAOTest {
 		assertEquals(false, result);
 
 	}
+	
+	@Test
+	public void testGetNumberOfTicketAlreadyPaid_forAnOldUser() {
+		//on doit initialiser toute la base avec un enreg complet pour qu'il y ait un utilisateur recurrent deja venu une fois
+		
+		// GIVEN : Un ticket BIKE sur la place numero 4 avec l immatriculation ABCDEF avec une durée de parking de 1 H
+		Ticket ticket = new Ticket();
+		ParkingSpot parkingSpot = new ParkingSpot(4, ParkingType.BIKE, false);
+		ticket.setVehicleRegNumber("ABCDEF");
+		ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
+		ticket.setOutTime(new Date(System.currentTimeMillis()));
+		
+		ticket.setPrice(14.5);
+		ticket.setParkingSpot(parkingSpot);
+		
+		//On intègre les données en base
+		ticketDAO.saveTicket(ticket);
+		ticketDAO.updateTicket(ticket);
+		
+		int nbTicket;
+		// WHEN
+		nbTicket = ticketDAO.getNumberOfTicketAlreadyPaid("ABCDEF");
+		
+		// THEN
+		// on s'assure qu'il y a bien une ligne en base
+		assertEquals(1, nbTicket);
+	
+	}
+	
+	@Test
+	public void testGetNumberOfTicketAlreadyPaid_forANewUser() {
+		//on n' initialise pas la base : pour simuler un nouvel utilisateur
+		
+		int nbTicket;
+		// WHEN
+		nbTicket = ticketDAO.getNumberOfTicketAlreadyPaid("ABCDEF");
+		
+		// THEN
+		// on s'assure qu'il n'y a pas de ligne en base pour cette immatriculation
+		assertEquals(0, nbTicket);
+	}
+
+	
+	@Test
+	public void testCheckIfVehicleIsAlreadyInTheParking_NoForAnOldUser() {
+		
+	//on doit initialiser toute la base avec un enreg complet pour qu'il y ait un utilisateur recurrent deja venu une fois
+		
+		// GIVEN : Un ticket BIKE sur la place numero 4 avec l immatriculation ABCDEF avec une durée de parking de 1 H
+		Ticket ticket = new Ticket();
+		ParkingSpot parkingSpot = new ParkingSpot(4, ParkingType.BIKE, false);
+		ticket.setVehicleRegNumber("ABCDEF");
+		ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
+		ticket.setOutTime(new Date(System.currentTimeMillis()));
+		
+		ticket.setPrice(14.5);
+		ticket.setParkingSpot(parkingSpot);
+		
+		//On intègre les données en base
+		ticketDAO.saveTicket(ticket);
+		ticketDAO.updateTicket(ticket);
+		
+		boolean regNumBerAlreadyHere;
+		// WHEN
+		regNumBerAlreadyHere = ticketDAO.checkIfVehicleIsAlreadyInTheParking("ABCDEF");
+		
+		// THEN
+		// on s'assure qu'il y a bien une ligne en base MAIS avec une date de sortie donc ne compte pas
+		assertEquals(false, regNumBerAlreadyHere);
+		
+		
+	}
+	
+	@Test
+	public void testCheckIfVehicleIsAlreadyInTheParking_NoForANewUser() {
+		
+		//on n' initialise pas la base : pour simuler un nouvel utilisateur
+		
+		boolean regNumberAlreadyHere;
+		// WHEN
+		regNumberAlreadyHere = ticketDAO.checkIfVehicleIsAlreadyInTheParking("ABCDEF");
+		
+		// THEN
+		// On n'a aucun enreg en base donc on ne compte pas
+		assertEquals(false, regNumberAlreadyHere);
+
+		
+	}
+	
+	@Test
+	public void testCheckIfVehicleIsAlreadyInTheParking_YesBecauseOfTheOutTimeNull() {
+	//on doit initialiser toute la base avec un enreg complet pour qu'il y ait un utilisateur recurrent deja venu une fois
+		
+		// GIVEN : Un ticket BIKE sur la place numero 4 avec l immatriculation ABCDEF avec une durée de parking de 1 H
+		Ticket ticket = new Ticket();
+		ParkingSpot parkingSpot = new ParkingSpot(4, ParkingType.BIKE, false);
+		ticket.setVehicleRegNumber("ABCDEF");
+		ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
+				
+		ticket.setParkingSpot(parkingSpot);
+		
+		//On intègre les données en base
+		ticketDAO.saveTicket(ticket);
+				
+		boolean regNumberAlreadyHere;
+		// WHEN
+		regNumberAlreadyHere = ticketDAO.checkIfVehicleIsAlreadyInTheParking("ABCDEF");
+		
+		// THEN
+		// on s'assure qu'il y a bien une ligne en base MAIS avec une date de sortie donc ne compte pas
+		assertEquals(true, regNumberAlreadyHere);
+		
+	}
+
+	
 }
